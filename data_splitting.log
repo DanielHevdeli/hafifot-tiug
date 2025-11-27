@@ -1,0 +1,15 @@
+Data quality check passed: No missing values or duplicates.
+Number of rows in the dataset: 10000
+Index(['question_id', 'length', 'date', 'text'], dtype='object')
+Date column converted to datetime. Data types:
+question_id             int64
+length                  int64
+date           datetime64[ns]
+text                   object
+dtype: object
+Date range in future_df: 
+  2016-07-18 22:03:00 to 2016-10-08 18:41:00
+Number of rows in future_df: 3000
+Number of rows in black_df: 3000
+Number of rows in present_df: 4000
+Data splitting completed successfully.
