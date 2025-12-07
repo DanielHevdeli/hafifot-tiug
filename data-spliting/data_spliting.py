@@ -4,8 +4,8 @@ import sys
 future_rows = 3000
 black_rows = 3000
 
-input_file = 'data/raw/posts.csv'
-data_folder = 'data/split_data'
+input_file = '../data/raw/posts.csv'
+data_folder = '../data/split_data'
 
 sys.stdout = open('data_splitting.log', 'w')
 
