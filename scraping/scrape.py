@@ -7,8 +7,14 @@ END_ID = 999999
 MIN_LENGTH = 800
 TARGET_LONG_POSTS = 10000
 
+# extract all hardcoded strings to the begining of the file for easy modification
+BASE_URL = "https://www.askp.co.il/question/"
+LOG_FILE = "scrape.log"
+POSTS_CSV = "posts.csv"
+
+
 def get_question_posts(question_id):
-    url = f"https://www.askp.co.il/question/{question_id}"
+    url = f"{BASE_URL}{question_id}"
     try:
         response = requests.get(url)
         response.raise_for_status()
@@ -85,7 +91,7 @@ def main():
         for idx, p in enumerate(posts):
             text = p.get('text', '')
             if text and len(text) >= MIN_LENGTH:
-                with open("scrape.log", "a", encoding="utf-8") as log_file:
+                with open(LOG_FILE, "a", encoding="utf-8") as log_file:
                     log_file.write(f"Fetched LONG post from {qid} (role={p.get('role')}, length={len(text)})\n")
 
                 posts_length[f"{qid}-{idx}"] = len(text)
@@ -99,14 +105,14 @@ def main():
                 })
 
         if not posts or all((not (p.get('text') and len(p.get('text')) >= MIN_LENGTH)) for p in posts):
-            with open("scrape.log", "a", encoding="utf-8") as log_file:
+            with open(LOG_FILE, "a", encoding="utf-8") as log_file:
                 log_file.write(f"Skipped question {qid} (no long posts or empty)\n")
 
         qid += 1
 
     df_csv = pd.DataFrame(records)
-    df_csv.to_csv("posts.csv", index=False, encoding="utf-8-sig")
-    print("Saved posts.csv with", len(df_csv), "rows.")
+    df_csv.to_csv(POSTS_CSV, index=False, encoding="utf-8-sig")
+    print(f"Saved {POSTS_CSV} with {len(df_csv)} rows.")
 
 if __name__ == "__main__":
     main()
