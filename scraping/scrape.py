@@ -14,11 +14,12 @@ import time
 START_ID = 200000
 END_ID = 999999
 MIN_LENGTH = 500
-NUM_DESIRED_POSTS = 1000
+NUM_DESIRED_POSTS = 10
 
 BASE_URL = "https://www.askp.co.il/question/"
 
-LOG_FILE = "scraping/scrape.log"
+timestamp = time.strftime("%Y-%m-%d_%H-%M-%S")
+LOG_FILE = f"logs/scrape_{timestamp}.log"
 POSTS_CSV = "data/raw/posts.csv"
 
 REQUEST_TIMEOUT = 10
