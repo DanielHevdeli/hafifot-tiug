@@ -7,6 +7,7 @@ import logging
 import re
 from concurrent.futures import ThreadPoolExecutor, wait, FIRST_COMPLETED
 import time
+import os
 # ===============================
 # CONFIG
 # ===============================
@@ -14,13 +15,14 @@ import time
 START_ID = 200000
 END_ID = 999999
 MIN_LENGTH = 500
-NUM_DESIRED_POSTS = 10
+NUM_DESIRED_POSTS = 1000
 
 BASE_URL = "https://www.askp.co.il/question/"
 
 timestamp = time.strftime("%Y-%m-%d_%H-%M-%S")
 LOG_FILE = f"logs/scrape_{timestamp}.log"
 POSTS_CSV = "data/raw/posts.csv"
+os.makedirs("data/raw", exist_ok=True)
 
 REQUEST_TIMEOUT = 10
 
