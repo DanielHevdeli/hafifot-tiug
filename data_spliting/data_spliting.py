@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from pathlib import Path
 import time
@@ -6,15 +7,18 @@ import time
 # CONFIG
 # ===============================
 
-INPUT_FILE = "data/raw/posts.csv"
-DATA_FOLDER = Path("data/split_data")
+RAW_DATA_FILE = "data/raw/articles.csv"
+DATA_FOLDER = Path("data/data_split")
+os.makedirs("data/data_split", exist_ok=True)
 
 FUTURE_RATIO = 0.30
 BLACK_RATIO = 0.30
 PRESENT_RATIO = 0.40
 
 timestamp = time.strftime("%Y-%m-%d_%H-%M-%S")
-LOG_FILE = f"logs/data_splitting_{timestamp}.log"
+LOG_FOLDER = f"logs/data_splitting"
+os.makedirs(LOG_FOLDER, exist_ok=True)
+LOG_FILE = f"{LOG_FOLDER}/data_splitting_{timestamp}.log"
 
 # ===============================
 # UTILITIES
@@ -110,4 +114,4 @@ def split_data(input_file, data_folder):
 # ===============================
 
 if __name__ == "__main__":
-    split_data(INPUT_FILE, DATA_FOLDER)
+    split_data(RAW_DATA_FILE, DATA_FOLDER)
