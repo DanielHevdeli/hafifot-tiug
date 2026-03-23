@@ -30,25 +30,33 @@ def get_article_text(html_content):
 
     return article_text if article_text else None
 
-def scrape(session, article_metadata):
+async def scrape_async(session, article_metadata):
     article_id = article_metadata["id"]
     date = article_metadata["date"]
     words_count = article_metadata["wordsCount"]
     author = article_metadata["author"]
 
+    url = f"{BASE_URL}{article_id}"
+    start = time.perf_counter()
+
     try:
-        start = time.perf_counter()
-        r = session.get(f"{BASE_URL}{article_id}", timeout=10)
+        # chrome impersonation + solid jitter is enough as a workaround against the bot-blocking
+        r = await session.get(url, impersonate="chrome110", timeout=15)
         elapsed = time.perf_counter() - start
-
         if r.status_code != 200:
-            return None, elapsed
+            return None, elapsed, f"http_{r.status_code}_{r.reason}"
 
-        article_text = get_article_text(r.text)
+        html = r.text
+
+        if not html:
+            return None, elapsed, "empty_html"
+
+        article_text = get_article_text(html)
+
         if not article_text:
-            return None, elapsed
+            return None, elapsed, "parse_failed"
 
-        result = {
+        return {
             "source": "c14",
             "date": date,
             "article_id": article_id,
@@ -56,14 +64,45 @@ def scrape(session, article_metadata):
             "length": len(article_text),
             "author": author,
             "text": article_text
-        }
-        return result, elapsed
+        }, elapsed, None
 
-    except Exception:
+    except Exception as e:
         elapsed = time.perf_counter() - start
-        return None, elapsed
+        return None, elapsed, f"error:{type(e).__name__}:{str(e)}"
 
-# if __name__ == "__main__":
-#     session = requests.Session()
-#     article_data = scrape(session, {"id": "1501457", "date": "2024-01-01", "wordsCount": 100, "author": "משה כהן"}, 1)
-#     print(article_data[0]["text"])
+# async def base_scrape_async(session, article_metadata):
+#     article_id = article_metadata["id"]
+#     date = article_metadata["date"]
+#     words_count = article_metadata["wordsCount"]
+#     author = article_metadata["author"]
+
+#     url = f"{BASE_URL}{article_id}"
+
+#     start = time.perf_counter()
+
+#     try:
+#         async with session.get(url, timeout=10) as r:
+#             elapsed = time.perf_counter() - start
+
+#             if r.status != 200:
+#                 return None, elapsed
+
+#             html = await r.text()
+#             article_text = get_article_text(html)
+
+#             if not article_text:
+#                 return None, elapsed
+
+#             return {
+#                 "source": "c14",
+#                 "date": date,
+#                 "article_id": article_id,
+#                 "wordsCount": words_count,
+#                 "length": len(article_text),
+#                 "author": author,
+#                 "text": article_text
+#             }, elapsed
+
+#     except Exception:
+#         elapsed = time.perf_counter() - start
+#         return None, elapsed
