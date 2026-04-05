@@ -10,12 +10,12 @@ from tqdm import tqdm
 import random
 import json
 
-from curl_cffi.requests import AsyncSession
+# from curl_cffi.requests import AsyncSession
 import aiohttp
 
 from .annotators.llm import annotate_async
 
-QUEUE_SIZE = 50
+QUEUE_SIZE = 10
 SERVER_MAX_CONCURRENCY = 5
 NUM_ANNOTATORS = 10
 
@@ -168,7 +168,7 @@ async def consumer(
             article = await queue.get()
 
             try:
-                await asyncio.sleep(random.uniform(1.0, 3.0))  # jitter
+                # await asyncio.sleep(random.uniform(1.0, 3.0))  # jitter
                 async with semaphore:
                     result, req_time, error = await annotate_async(
                         session, article, model_name
@@ -219,9 +219,9 @@ async def main_async(all_articles: list, desired: int | str):
     if target is not None and target == 0:
         return stats  # nothing to annotate, return empty stats
 
-    # timeout = aiohttp.ClientTimeout(total=15)
-    # async with aiohttp.ClientSession(timeout=timeout) as session:
-    async with AsyncSession() as session:
+    timeout = aiohttp.ClientTimeout(total=15)
+    async with aiohttp.ClientSession(timeout=timeout) as session:
+    # async with AsyncSession() as session:
         with open(ANNOTATED_CSV, "a", newline="", encoding="utf-8-sig") as f:
 
             writer = csv.DictWriter(
@@ -329,6 +329,6 @@ def main(set_type: str, model_name: str, desired=None, timestamp=None):
     print_annotate_stats(stats, total_time)
 
 if __name__ == "__main__":
-    model_name = "shalom/lachem"
-    set_type = "black"
+    model_name = "openai/gpt-oss-120b"
+    set_type = "present"
     main(set_type=set_type, model_name=model_name)
