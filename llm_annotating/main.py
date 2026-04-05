@@ -3,18 +3,18 @@ from multiprocessing import Process
 
 from .run_annotation import main as run_annotation
 
-DESIRED = 10
+DESIRED = "full"
 
 SET_TYPES = [
-    "present",
-    "black",
+    # "present",
+    # "black",
     "future"
 ]
 
 MODELS = [
-    "openai/gpt-oss-120b",
-    "meta-llama/Llama3.3",
-    "nvidia/nemotron"
+    # "meta-llama/Llama-4-Scout-17B-16E-Instruct",
+    # "openai/gpt-oss-120b",
+    "nvidia/nemotron-3-nano-30b-a3b-bf16"
 ]
 
 def main():
