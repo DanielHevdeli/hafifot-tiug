@@ -1,6 +1,0 @@
-[core]
-    remote = hf
-['remote "gdrive"']
-    url = gdrive://1Kuly_TTYafOU65wa5FHBwLXHpUxBjzRA
-['remote "hf"']
-    url = https://huggingface.co/datasets/DanielHevdeli/ask-people-questions
